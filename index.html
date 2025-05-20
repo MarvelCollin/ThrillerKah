@@ -5,35 +5,135 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ThrillerKah</title>
-    <!-- Tailwind CSS CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:wght@400;600;700&family=Creepster&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind Configuration -->
     <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
             colors: {
-              primary: {
-                50: '#f0f9ff',
-                100: '#e0f2fe',
-                200: '#bae6fd',
-                300: '#7dd3fc',
-                400: '#38bdf8',
-                500: '#0ea5e9',
-                600: '#0284c7',
-                700: '#0369a1',
-                800: '#075985',
-                900: '#0c4a6e',
-              }
+              red: {
+                600: '#b91c1c',
+                700: '#991b1b',
+                800: '#7f1d1d',
+                900: '#5d0f0f',
+              },
+              gray: {
+                800: '#1f2937',
+                900: '#111827',
+              },
+              black: '#0a0a0a',
             },
             fontFamily: {
-              sans: ['Inter var', 'sans-serif'],
-            }
+              sans: ['Crimson Pro', 'serif'],
+              display: ['Bebas Neue', 'sans-serif'],
+              creepy: ['Creepster', 'cursive']
+            },
+            animation: {
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'flicker': 'flicker 5s linear infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'creepy-float': 'creepyFloat 6s ease-in-out infinite',
+              'blood-drip': 'bloodDrip 2s ease-out forwards',
+              'text-reveal': 'textReveal 1.5s cubic-bezier(0.77, 0, 0.18, 1) forwards',
+              'glitch': 'glitch-anim 5s infinite linear alternate-reverse',
+              'glitch-2': 'glitch-anim2 5s infinite linear alternate-reverse',
+              'fade-in': 'fadeIn 0.8s ease forwards',
+              'pulse-effect': 'pulse 2s infinite',
+              'shake': 'shake 0.5s ease-in-out',
+            },
+            keyframes: {
+              flicker: {
+                '0%, 100%': { opacity: '1' },
+                '50%': { opacity: '0.5' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              creepyFloat: {
+                '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                '25%': { transform: 'translateY(-5px) rotate(1deg)' },
+                '50%': { transform: 'translateY(-10px) rotate(-1deg)' },
+                '75%': { transform: 'translateY(-5px) rotate(1deg)' },
+              },
+              bloodDrip: {
+                '0%': { transform: 'translateY(-100%)' },
+                '100%': { transform: 'translateY(0)' },
+              },
+              textReveal: {
+                '0%': { clipPath: 'inset(0 100% 0 0)' },
+                '100%': { clipPath: 'inset(0 0 0 0)' },
+              },
+              fadeIn: {
+                'from': { opacity: '0', transform: 'translateY(20px)' },
+                'to': { opacity: '1', transform: 'translateY(0)' },
+              },
+              pulse: {
+                '0%, 100%': { transform: 'scale(1)' },
+                '50%': { transform: 'scale(1.05)' },
+              },
+              shake: {
+                '0%, 100%': { transform: 'translateX(0)' },
+                '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-5px)' },
+                '20%, 40%, 60%, 80%': { transform: 'translateX(5px)' },
+              },
+            },
+            backgroundImage: {
+              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+              'blood-drip': 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M40,0 Q40,40 30,90 Q30,100 40,100 Q50,100 50,90 Q40,40 50,0 Z\' fill=\'%23b91c1c\'/%3E%3C/svg%3E")',
+              'film-grain': 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
+            },
           }
         }
       }
     </script>
+    <style>
+      /* Custom animations and effects */
+      .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+      
+      .blood-drip {
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40,0 Q40,40 30,90 Q30,100 40,100 Q50,100 50,90 Q40,40 50,0 Z' fill='%23b91c1c'/%3E%3C/svg%3E");
+        background-repeat: repeat-x;
+        background-size: 50px 50px;
+        height: 50px;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      
+      @keyframes flicker {
+        0%, 100% { opacity: 1; }
+        41.99% { opacity: 1; }
+        42% { opacity: 0.8; }
+        43% { opacity: 1; }
+        44.99% { opacity: 1; }
+        45% { opacity: 0.2; }
+        45.5% { opacity: 1; }
+        50% { opacity: 1; }
+        54.99% { opacity: 1; }
+        55% { opacity: 0.6; }
+        55.5% { opacity: 1; }
+        70% { opacity: 1; }
+        74.99% { opacity: 1; }
+        75% { opacity: 0.8; }
+        75.5% { opacity: 1; }
+        80% { opacity: 1; }
+        89.99% { opacity: 1; }
+        90% { opacity: 0.4; }
+        90.5% { opacity: 1; }
+      }
+      
+      .flicker-anim {
+        animation: flicker 8s linear infinite both;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
