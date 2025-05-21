@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import './App.css'
 
 // Add type declarations for GSAP
@@ -25,28 +25,42 @@ function App() {
   const [showVideo, setShowVideo] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const [currentProgress, setCurrentProgress] = useState(0);
+  const [youtubeError, setYoutubeError] = useState(false);
   
-  // Handle mouse movement for interactive elements
+  // Optimized - memoize event handlers
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    setCursorPosition({
+      x: e.clientX / window.innerWidth,
+      y: e.clientY / window.innerHeight
+    });
+  }, []);
+  
+  const handleYoutubeError = useCallback((e: React.SyntheticEvent<HTMLIFrameElement>) => {
+    console.warn("YouTube iframe failed to load properly", e);
+    setYoutubeError(true);
+  }, []);
+  
+  const handleThumbnailClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowVideo(true);
+    setYoutubeError(false); // Reset error state when trying to play
+  }, []);
+  
+  // Mouse movement and initial loading effect
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setCursorPosition({
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight
-      });
-    };
-    
     window.addEventListener('mousemove', handleMouseMove);
     
-    // Simulate initial loading
+    // Simulate initial loading with reduced time
     const timer = setTimeout(() => {
       setLoadingComplete(true);
-    }, 1500);
+    }, 1000); // Reduced from 1500ms
     
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       clearTimeout(timer);
     };
-  }, []);
+  }, [handleMouseMove]);
 
   useEffect(() => {
     const gsap = window.gsap;
@@ -108,36 +122,39 @@ function App() {
     
     // Animation control values
     let targetProgress = 0;
-    let currentProgress = 0;
+    let internalCurrentProgress = 0;
     let lastTime = 0;
-    let lastProgress = 0;
     
     // Create animation timeline - with extended durations for longer scrolling
     const masterTimeline = gsap.timeline({
       paused: true,
       onUpdate: () => {
         const progress = masterTimeline.progress();
-        lastProgress = progress;
         
-        // Video section visibility control
-        if (progress < 0.55 && showVideo) {
+        // Section visibility control - ensure clean transitions
+        // Title section visibility (fully visible 0-0.3, fade out 0.3-0.4)
+        const titleSectionOpacity = progress < 0.3 ? 1 : Math.max(0, 1 - ((progress - 0.3) * 10));
+        gsap.set(".title-section", { opacity: titleSectionOpacity });
+        
+        // Door section visibility (start fade in at 0.35, fully visible 0.4-0.7, fade out 0.7-0.8)
+        const doorSectionOpacity = progress < 0.35 ? 0 : 
+                                 progress < 0.4 ? ((progress - 0.35) * 20) : 
+                                 progress < 0.7 ? 1 : 
+                                 Math.max(0, 1 - ((progress - 0.7) * 10));
+        gsap.set(".door-container", { opacity: doorSectionOpacity });
+        
+        // Video section visibility (start fade in at 0.75, fully visible at 0.85)
+        const videoSectionOpacity = progress < 0.75 ? 0 : 
+                                  progress < 0.85 ? ((progress - 0.75) * 10) : 1;
+        gsap.set(videoSectionRef.current, { opacity: videoSectionOpacity });
+        
+        // Video thumbnail control
+        if (progress > 0.9 && !showVideo) {
+          // Auto-play video when reaching the very end
+          setShowVideo(true);
+        } else if (progress < 0.7 && showVideo) {
           // Hide video when scrolling back to door scene
           setShowVideo(false);
-        }
-        
-        // Control video section visibility
-        if (progress > 0.7 && !showVideo) {
-          // Make video section visible when reaching the end
-          gsap.to(videoSectionRef.current, {
-            opacity: 1,
-            duration: 0.3
-          });
-        } else if (progress < 0.6) {
-          // Ensure video section is hidden when scrolling back
-          gsap.to(videoSectionRef.current, {
-            opacity: 0,
-            duration: 0.3
-          });
         }
         
         // Update progress bar
@@ -157,13 +174,8 @@ function App() {
           bloodDripsRef.current.style.opacity = bloodOpacity.toString();
         }
         
-        // Reveal creepy scene behind door based on progress
-        if (progress > 0.48) {
-          gsap.to(".door-background", {
-            opacity: 0.8,
-            duration: 1.5
-          });
-        }
+        // Update current progress
+        setCurrentProgress(progress);
       }
     });
     
@@ -171,15 +183,15 @@ function App() {
     masterTimeline.to([titleRef.current, subtitleRef.current, scrollPromptRef.current], {
       opacity: 0,
       y: -50,
-      duration: 40, // Increased duration
-      stagger: 3
+      duration: 60, // Increased duration for longer scroll
+      stagger: 5
     }, 0);
     
     // Door appearing
     masterTimeline.fromTo(doorContainerRef.current,
       { opacity: 0, scale: 0.9 },
-      { opacity: 1, scale: 1, duration: 30 },
-      15
+      { opacity: 1, scale: 1, duration: 40 },
+      35 // Start later
     );
     
     // Door opening - longer duration
@@ -187,52 +199,52 @@ function App() {
       rotateY: 110,
       x: "-100%",
       transformOrigin: "left",
-      duration: 40,
+      duration: 50, // Extended duration
       ease: "power2.inOut"
-    }, 50);
+    }, 70); // Start later
     
     masterTimeline.to(doorRightRef.current, {
       rotateY: -110,
       x: "100%",
       transformOrigin: "right",
-      duration: 40,
+      duration: 50, // Extended duration
       ease: "power2.inOut"
-    }, 50);
+    }, 70); // Start later
     
     // Door light effect
     masterTimeline.to(".door-light", {
       opacity: 0.9,
-      duration: 30
-    }, 55);
+      duration: 40
+    }, 75);
     
     // Background atmosphere intensifies
     masterTimeline.to(".particles-container", {
       opacity: 0.9,
       scale: 1.2,
-      duration: 30
-    }, 45);
+      duration: 40
+    }, 65);
     
     // Door shaking effect as it opens
     masterTimeline.to(".door-container", {
       x: "random(-5, 5)",
       y: "random(-3, 3)",
-      repeat: 10,
+      repeat: 15, // More repetitions
       repeatRefresh: true,
       duration: 0.2,
       ease: "power1.inOut"
-    }, 50);
+    }, 70);
     
     // Door fade out and video appear
     masterTimeline.to(doorContainerRef.current, {
       opacity: 0,
-      duration: 30
-    }, 90);
+      duration: 40
+    }, 120);
     
     // Video section appearing
     masterTimeline.fromTo(videoSectionRef.current,
       { opacity: 0, scale: 0.9 },
-      { scale: 1, duration: 30 },
-      110
+      { scale: 1, duration: 40 },
+      140
     );
     
     // Animation loop for smooth scrolling with lerping
@@ -241,12 +253,12 @@ function App() {
       const deltaTime = Math.min(time - lastTime, 50) / 1000; // Limit to 50ms and convert to seconds
       lastTime = time;
       
-      // Smooth lerping for progress
-      const ease = 0.05; // Lower = smoother but slower response
-      currentProgress += (targetProgress - currentProgress) * Math.min(ease * (60 * deltaTime), 1);
+      // Smooth lerping for progress - improved for smoother scrolling
+      const ease = 0.03; // Lower = smoother but slower response (reduced from 0.05)
+      internalCurrentProgress += (targetProgress - internalCurrentProgress) * Math.min(ease * (60 * deltaTime), 1);
       
-      // Apply to timeline
-      masterTimeline.progress(currentProgress);
+      // Apply to timeline with slight rounding to avoid micro-jitters
+      masterTimeline.progress(Math.round(internalCurrentProgress * 1000) / 1000);
       
       // Continue animation loop
       requestAnimationFrame(animateScroll);
@@ -262,7 +274,7 @@ function App() {
       e.stopPropagation();
       
       // Adjust sensitivity and direction - reduced for slower progression
-      const sensitivity = 0.0008; // Lower = less sensitive, longer scroll
+      const sensitivity = 0.0004; // Lower = less sensitive, longer scroll (reduced from 0.0008)
       const delta = e.deltaY * sensitivity;
       
       // Update target progress with clamping 0-1
@@ -320,11 +332,45 @@ function App() {
     };
   }, [showVideo]);
   
-  // Video thumbnail click
-  const handleThumbnailClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowVideo(true);
-  };
+  // Add a useEffect for consistent animation updates and particle generation
+  useEffect(() => {
+    // This ensures animations that depend on currentProgress update smoothly
+    const elements = document.querySelectorAll('.progress-animated');
+    elements.forEach(el => {
+      (el as HTMLElement).style.setProperty('--progress', `${currentProgress}`);
+    });
+    
+    // Dynamic particle generation based on scroll progress
+    if (currentProgress > 0.4 && currentProgress < 0.8) {
+      const particlesContainer = document.querySelector('.particles-container');
+      if (particlesContainer && Math.random() > 0.8) {
+        const particle = document.createElement('div');
+        const size = Math.random() * 3 + 1;
+        const hue = Math.random() * 20;
+        const duration = Math.random() * 5 + 5;
+        const delay = Math.random() * 2;
+        
+        particle.className = 'particle';
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.backgroundColor = `hsl(${hue}, 80%, 40%)`;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.opacity = '0';
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${delay}s`;
+        
+        particlesContainer.appendChild(particle);
+        
+        // Remove the particle after animation completes
+        setTimeout(() => {
+          if (particlesContainer.contains(particle)) {
+            particlesContainer.removeChild(particle);
+          }
+        }, (duration + delay) * 1000);
+      }
+    }
+  }, [currentProgress]);
   
   return (
     <>
@@ -360,14 +406,36 @@ function App() {
           className="absolute inset-0 bg-fog-texture bg-repeat opacity-20 pointer-events-none z-0"
           style={{
             backgroundSize: '200% 200%',
-            filter: 'blur(12px)',
-            transform: `translate(${(cursorPosition.x - 0.5) * -20}px, ${(cursorPosition.y - 0.5) * -20}px)`
+            filter: `blur(${12 + (currentProgress * 8)}px)`,
+            transform: `translate(${(cursorPosition.x - 0.5) * -20}px, ${(cursorPosition.y - 0.5) * -20}px)`,
+            transition: 'filter 0.3s ease-out'
           }}
         ></div>
         
         {/* Progress indicator */}
         <div className="fixed bottom-0 left-0 right-0 h-1 bg-gray-800 z-50">
-          <div ref={progressBarRef} className="h-full bg-red-700 progress-bar w-0"></div>
+          <div 
+            ref={progressBarRef} 
+            className="h-full bg-red-700 progress-bar w-0"
+            style={{
+              boxShadow: `0 0 ${10 + (currentProgress * 15)}px rgba(220, 38, 38, ${0.5 + (currentProgress * 0.5)})`
+            }}
+          ></div>
+        </div>
+        
+        {/* Scroll Indicator */}
+        <div className="fixed bottom-5 left-0 right-0 text-center text-gray-500 text-sm z-50 progress-animated"
+          style={{
+            opacity: currentProgress < 0.95 ? 1 : 0,
+            transform: `translateY(${currentProgress > 0.9 ? '20px' : '0'})`
+          }}
+        >
+          <div className="inline-block bg-black bg-opacity-50 px-4 py-2 rounded-full backdrop-blur-sm">
+            <span className="mr-2">Scroll to continue</span>
+            <svg className="inline-block animate-pulse-slow" width="16" height="24" viewBox="0 0 24 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2V34M12 34L2 24M12 34L22 24" stroke="#888888" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
         </div>
         
         {/* Instruction */}
@@ -376,12 +444,31 @@ function App() {
         </div>
         
         {/* Common background elements */}
-        <div className="absolute inset-0 bg-film-grain opacity-15 pointer-events-none mix-blend-overlay z-0"></div>
-        <div className="absolute inset-0 bg-gradient-radial from-transparent via-gray-900 to-black opacity-40 z-0"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_40%,black_100%)] opacity-60 pointer-events-none z-0"></div>
+        <div className="absolute inset-0 bg-film-grain opacity-15 pointer-events-none mix-blend-overlay z-0"
+          style={{
+            opacity: 0.15 + (currentProgress * 0.1)
+          }}
+        ></div>
+        <div className="absolute inset-0 bg-gradient-radial from-transparent via-gray-900 to-black opacity-40 z-0"
+          style={{
+            opacity: 0.4 + (currentProgress * 0.2)
+          }}
+        ></div>
+        <div 
+          className="absolute inset-0 bg-[radial-gradient(circle,transparent_40%,black_100%)] opacity-60 pointer-events-none z-0"
+          style={{
+            opacity: 0.6 + (currentProgress * 0.2),
+            background: `radial-gradient(circle, rgba(0,0,0,0) ${40 - (currentProgress * 15)}%, rgba(0,0,0,1) 100%)`
+          }}
+        ></div>
         
         {/* Enhanced blood drips with more variation */}
-        <div ref={bloodDripsRef} className="absolute inset-0 pointer-events-none z-0">
+        <div ref={bloodDripsRef} className="absolute inset-0 pointer-events-none z-0"
+          style={{
+            filter: `saturate(${1 + (currentProgress * 0.5)}) contrast(${1 + (currentProgress * 0.2)})`,
+            transition: 'filter 0.5s ease-out'
+          }}
+        >
           {/* Random blood drips */}
           <div className="absolute top-0 left-[10%] w-12 h-40 opacity-80">
             <div className="w-4 h-40 mx-auto bg-gradient-to-b from-red-900 to-red-900/10"></div>
@@ -426,24 +513,45 @@ function App() {
         </div>
         
         {/* Title Section */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 title-section">
           <h1 
             ref={titleRef} 
-            className="text-7xl md:text-8xl font-creepy text-red-600 tracking-wider flicker-anim uppercase"
+            className="text-7xl md:text-8xl font-creepy tracking-wider flicker-anim uppercase"
             style={{
               textShadow: '0 0 15px rgba(220, 38, 38, 0.8)',
               transform: `translate(${(cursorPosition.x - 0.5) * -10}px, ${(cursorPosition.y - 0.5) * -10}px)`,
               filter: `hue-rotate(${cursorPosition.x * 10}deg)`
             }}
           >
-            Thriller
+            {Array.from("Thriller").map((char, index) => (
+              <span 
+                key={index}
+                className="inline-block"
+                style={{
+                  transform: `
+                    translateY(${Math.sin((index * 0.5) + (currentProgress * 5)) * 10}px) 
+                    rotate(${Math.sin((index * 0.2) + (currentProgress * 3)) * 5}deg)
+                    scale(${1 + (currentProgress * 0.05) + (Math.sin((index * 0.5) + (currentProgress * 2)) * 0.1)})
+                  `,
+                  opacity: currentProgress > 0.8 ? (1 - ((currentProgress - 0.8) * 5)) : 1,
+                  color: `hsl(${0 + (index * 5) + (currentProgress * 20)}, ${70 + (currentProgress * 30)}%, ${50 - (currentProgress * 10)}%)`,
+                  textShadow: `
+                    0 0 ${5 + (currentProgress * 20)}px rgba(${180 + (currentProgress * 75)}, 0, 0, ${0.5 + (currentProgress * 0.5)})
+                  `,
+                  transition: 'transform 0.05s ease-out, color 0.05s ease-out'
+                }}
+              >
+                {char}
+              </span>
+            ))}
           </h1>
           
           <p 
             ref={subtitleRef}
             className="text-xl md:text-2xl text-gray-400 mt-8 font-sans tracking-wider text-center px-4"
             style={{
-              transform: `translate(${(cursorPosition.x - 0.5) * -5}px, ${(cursorPosition.y - 0.5) * -5}px)`
+              transform: `translate(${(cursorPosition.x - 0.5) * -5}px, ${(cursorPosition.y - 0.5) * -5}px)`,
+              opacity: currentProgress > 0.4 ? (1 - ((currentProgress - 0.4) * 1.6)) : 1
             }}
           >
             YOUR NIGHTMARE AWAITS
@@ -464,14 +572,28 @@ function App() {
         <div 
           ref={doorContainerRef} 
           className="door-container absolute inset-0 flex items-center justify-center opacity-0 z-20"
+          style={{
+            perspective: '1000px',
+            transformStyle: 'preserve-3d'
+          }}
         >
           {/* Door frame and light effect */}
-          <div className="relative w-[300px] h-[450px] border-8 border-gray-800 bg-black overflow-hidden shadow-[0_0_25px_rgba(0,0,0,0.9)]">
+          <div className="relative w-[300px] h-[450px] border-8 border-gray-800 bg-black overflow-hidden shadow-[0_0_25px_rgba(0,0,0,0.9)] door-zoom"
+            style={{
+              transform: currentProgress > 0.6 ? `scale(${1 + (currentProgress - 0.6) * 8}) translateZ(${(currentProgress - 0.6) * 500}px)` : 'scale(1)',
+              transition: 'transform 0.5s ease-out'
+            }}
+          >
             {/* Door light behind the door */}
             <div className="door-light absolute inset-0 bg-gradient-radial from-red-900/60 to-black opacity-0"></div>
             
             {/* Creepy scene behind door */}
-            <div className="absolute inset-0 opacity-0 door-background transition-opacity duration-1000">
+            <div 
+              className="absolute inset-0 opacity-0 door-background transition-opacity duration-1000"
+              style={{
+                filter: `blur(${Math.max(0, (currentProgress - 0.7) * 10)}px)`
+              }}
+            >
               <div className="absolute inset-0 bg-black flex items-center justify-center">
                 <div className="w-full h-full bg-gradient-to-b from-black via-red-900/20 to-black"></div>
                 
@@ -552,19 +674,31 @@ function App() {
         {/* Video Section */}
         <div 
           ref={videoSectionRef}
-          className="absolute inset-0 flex flex-col items-center justify-center opacity-0 z-30"
+          className="absolute inset-0 flex flex-col items-center justify-center opacity-0 z-30 video-section"
+          style={{
+            background: `radial-gradient(circle, rgba(10,10,10,0.8) 0%, rgba(0,0,0,1) 100%)`,
+            backdropFilter: 'blur(5px)'
+          }}
         >
           <h2 
             className="text-4xl md:text-5xl font-creepy text-red-600 mb-8 tracking-wider flicker-anim uppercase"
             style={{
               textShadow: '0 0 15px rgba(220, 38, 38, 0.8)',
-              transform: `translate(${(cursorPosition.x - 0.5) * -15}px, ${(cursorPosition.y - 0.5) * -15}px)`
+              transform: `translate(${(cursorPosition.x - 0.5) * -15}px, ${(cursorPosition.y - 0.5) * -15}px)`,
+              animation: 'textReveal 1.5s cubic-bezier(0.77, 0, 0.18, 1) forwards'
             }}
           >
             Enter the Nightmare
           </h2>
           
-          <div className="w-full max-w-3xl px-4">
+          <div className="w-full max-w-3xl px-4 transform transition-all duration-700"
+            style={{
+              transform: currentProgress > 0.8 ? 'scale(1)' : 'scale(0.95)',
+              opacity: currentProgress > 0.8 ? 1 : 0.8,
+              boxShadow: `0 0 ${30 + (currentProgress * 30)}px rgba(220, 38, 38, 0.3)`,
+              animation: 'fadeIn 0.8s ease forwards'
+            }}
+          >
             <div className="relative pb-[56.25%] w-full overflow-hidden rounded-lg shadow-2xl border-2 border-red-900/70">
               {!showVideo ? (
                 <div 
@@ -572,28 +706,61 @@ function App() {
                   onClick={handleThumbnailClick}
                 >
                   {/* Thriller thumbnail with play button overlay */}
-                  <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("https://i.ytimg.com/vi/sOnqjkJTMaA/maxresdefault.jpg")' }}></div>
-                  <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                    <div className="w-20 h-20 rounded-full bg-red-700 bg-opacity-80 flex items-center justify-center hover:scale-110 transition-transform transform duration-300 group-hover:bg-red-600">
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center transform transition-transform duration-700" 
+                    style={{ 
+                      backgroundImage: 'url("https://i.ytimg.com/vi/sOnqjkJTMaA/maxresdefault.jpg")',
+                      transform: `scale(${1 + ((1 - currentProgress) * 0.1)})`,
+                      filter: `brightness(${0.7 + (currentProgress * 0.3)}) contrast(${1 + (currentProgress * 0.2)})` 
+                    }}
+                  ></div>
+                  <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center group-hover:bg-opacity-30 transition-all duration-300">
+                    <div className="w-20 h-20 rounded-full bg-red-700 bg-opacity-80 flex items-center justify-center hover:scale-110 transition-transform transform duration-300 group-hover:bg-red-600 pulse-effect">
                       <svg className="w-10 h-10 transform transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="white">
                         <path d="M8 5v14l11-7z"></path>
                       </svg>
                     </div>
                   </div>
-                  <div className="absolute bottom-4 left-0 right-0 text-center text-gray-300 px-4">
+                  <div className="absolute bottom-4 left-0 right-0 text-center text-gray-300 px-4 animate-fade-in">
                     Click to play Michael Jackson - Thriller
                   </div>
                 </div>
               ) : (
                 <div className="absolute inset-0 w-full h-full">
-                  <iframe 
-                    className="absolute inset-0 w-full h-full"
-                    src="https://www.youtube-nocookie.com/embed/sOnqjkJTMaA?rel=0&autoplay=1" 
-                    title="Michael Jackson - Thriller (Official Video)" 
-                    allow="autoplay" 
-                    allowFullScreen
-                    style={{ pointerEvents: 'auto' }}
-                  ></iframe>
+                  {youtubeError ? (
+                    <div className="absolute inset-0 bg-black flex flex-col items-center justify-center p-4">
+                      <div className="text-red-600 font-creepy text-2xl mb-4">Video failed to load</div>
+                      <p className="text-gray-400 text-center mb-4">
+                        Unable to load the YouTube video due to Content Security Policy or connection issues.
+                      </p>
+                      <a 
+                        href="https://www.youtube.com/watch?v=sOnqjkJTMaA" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 bg-red-900 hover:bg-red-800 text-white rounded transition-colors"
+                      >
+                        Watch on YouTube
+                      </a>
+                      <button 
+                        className="mt-4 text-gray-500 underline"
+                        onClick={() => setShowVideo(false)}
+                      >
+                        Return to thumbnail
+                      </button>
+                    </div>
+                  ) : (
+                    <iframe 
+                      className="absolute inset-0 w-full h-full"
+                      src="https://www.youtube-nocookie.com/embed/sOnqjkJTMaA?rel=0&autoplay=1&modestbranding=1&iv_load_policy=3" 
+                      title="Michael Jackson - Thriller (Official Video)" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      style={{ pointerEvents: 'auto' }}
+                      onError={handleYoutubeError}
+                    ></iframe>
+                  )}
                   <div 
                     className="absolute inset-0 w-full h-full z-10" 
                     style={{ pointerEvents: 'none' }}

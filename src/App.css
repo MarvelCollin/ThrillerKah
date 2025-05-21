@@ -1,225 +1,32 @@
-@keyframes creepyFloat {
+/* Add any necessary animation styles here */
+@keyframes pulse-glow {
   0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-5px) rotate(1deg);
+    transform: scale(1);
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
   }
   50% {
-    transform: translateY(-10px) rotate(-1deg);
-  }
-  75% {
-    transform: translateY(-5px) rotate(1deg);
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(220, 38, 38, 0.8);
   }
 }
 
-@keyframes bloodDrip {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(0);
-  }
+.pulse-effect {
+  animation: pulse-glow 2s infinite ease-in-out;
 }
 
-@keyframes textReveal {
-  0% {
-    clip-path: inset(0 100% 0 0);
-  }
-  100% {
-    clip-path: inset(0 0 0 0);
-  }
+/* Character animation helpers */
+.char-animated {
+  display: inline-block;
+  transform-origin: center;
+  transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
 }
 
-.creepy-float {
-  animation: creepyFloat 6s ease-in-out infinite;
+/* Progress animated elements use CSS variables for smoother transitions */
+.progress-animated {
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
-.text-reveal {
-  animation: textReveal 1.5s cubic-bezier(0.77, 0, 0.18, 1) forwards;
-}
-
-.blood-drip-animation {
-  animation: bloodDrip 2s ease-out forwards;
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0a0a0a;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #5d0f0f;
-  border-radius: 0;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #b91c1c;
-}
-
-.glitch {
-  position: relative;
-}
-
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.glitch::before {
-  left: 2px;
-  text-shadow: -1px 0 #b91c1c;
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim 5s infinite linear alternate-reverse;
-}
-
-.glitch::after {
-  left: -2px;
-  text-shadow: -1px 0 #5d0f0f;
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim2 5s infinite linear alternate-reverse;
-}
-
-@keyframes glitch-anim {
-  0% {
-    clip: rect(42px, 9999px, 44px, 0);
-  }
-  5% {
-    clip: rect(12px, 9999px, 59px, 0);
-  }
-  10% {
-    clip: rect(48px, 9999px, 29px, 0);
-  }
-  15.0% {
-    clip: rect(42px, 9999px, 73px, 0);
-  }
-  20% {
-    clip: rect(63px, 9999px, 27px, 0);
-  }
-  25% {
-    clip: rect(34px, 9999px, 55px, 0);
-  }
-  30.0% {
-    clip: rect(86px, 9999px, 73px, 0);
-  }
-  35% {
-    clip: rect(20px, 9999px, 20px, 0);
-  }
-  40% {
-    clip: rect(26px, 9999px, 60px, 0);
-  }
-  45% {
-    clip: rect(25px, 9999px, 66px, 0);
-  }
-  50% {
-    clip: rect(57px, 9999px, 98px, 0);
-  }
-  55.0% {
-    clip: rect(5px, 9999px, 46px, 0);
-  }
-  60.0% {
-    clip: rect(82px, 9999px, 31px, 0);
-  }
-  65% {
-    clip: rect(54px, 9999px, 27px, 0);
-  }
-  70% {
-    clip: rect(28px, 9999px, 99px, 0);
-  }
-  75% {
-    clip: rect(45px, 9999px, 69px, 0);
-  }
-  80% {
-    clip: rect(23px, 9999px, 85px, 0);
-  }
-  85.0% {
-    clip: rect(54px, 9999px, 84px, 0);
-  }
-  90% {
-    clip: rect(45px, 9999px, 47px, 0);
-  }
-  95% {
-    clip: rect(37px, 9999px, 20px, 0);
-  }
-  100% {
-    clip: rect(4px, 9999px, 91px, 0);
-  }
-}
-
-@keyframes glitch-anim2 {
-  0% {
-    clip: rect(65px, 9999px, 100px, 0);
-  }
-  5% {
-    clip: rect(52px, 9999px, 74px, 0);
-  }
-  10% {
-    clip: rect(79px, 9999px, 85px, 0);
-  }
-  15.0% {
-    clip: rect(75px, 9999px, 5px, 0);
-  }
-  20% {
-    clip: rect(67px, 9999px, 61px, 0);
-  }
-  25% {
-    clip: rect(14px, 9999px, 79px, 0);
-  }
-  30.0% {
-    clip: rect(1px, 9999px, 66px, 0);
-  }
-  35% {
-    clip: rect(86px, 9999px, 30px, 0);
-  }
-  40% {
-    clip: rect(23px, 9999px, 98px, 0);
-  }
-  45% {
-    clip: rect(85px, 9999px, 72px, 0);
-  }
-  50% {
-    clip: rect(71px, 9999px, 75px, 0);
-  }
-  55.0% {
-    clip: rect(2px, 9999px, 48px, 0);
-  }
-  60.0% {
-    clip: rect(30px, 9999px, 16px, 0);
-  }
-  65% {
-    clip: rect(59px, 9999px, 50px, 0);
-  }
-  70% {
-    clip: rect(41px, 9999px, 62px, 0);
-  }
-  75% {
-    clip: rect(2px, 9999px, 82px, 0);
-  }
-  80% {
-    clip: rect(47px, 9999px, 73px, 0);
-  }
-  85.0% {
-    clip: rect(3px, 9999px, 27px, 0);
-  }
-  90% {
-    clip: rect(26px, 9999px, 55px, 0);
-  }
-  95% {
-    clip: rect(42px, 9999px, 97px, 0);
-  }
-  100% {
-    clip: rect(38px, 9999px, 49px, 0);
-  }
-}
-
+/* Enhance existing animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -231,195 +38,76 @@
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
+@keyframes textReveal {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    transform: translateX(-20px);
   }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-@keyframes shake {
-  0%, 100% {
+  100% {
+    clip-path: inset(0 0 0 0);
     transform: translateX(0);
   }
-  10%, 30%, 50%, 70%, 90% {
-    transform: translateX(-5px);
-  }
-  20%, 40%, 60%, 80% {
-    transform: translateX(5px);
-  }
 }
 
-.fade-in {
-  animation: fadeIn 0.8s ease forwards;
-}
-
-.pulse-effect {
-  animation: pulse 2s infinite;
-}
-
-.shake-effect {
-  animation: shake 0.5s ease-in-out;
-}
-
-@keyframes flyAcross1 {
-  0% {
-    transform: translate(-100vw, 20vh) rotate(10deg);
-  }
-  100% {
-    transform: translate(100vw, 10vh) rotate(-10deg);
-  }
-}
-
-@keyframes flyAcross2 {
-  0% {
-    transform: translate(-100vw, 40vh) rotate(20deg);
-  }
-  100% {
-    transform: translate(100vw, 30vh) rotate(-20deg);
-  }
-}
-
-@keyframes flyAcross3 {
-  0% {
-    transform: translate(100vw, 60vh) rotate(-15deg);
-  }
-  100% {
-    transform: translate(-100vw, 50vh) rotate(15deg);
-  }
-}
-
-@keyframes flap {
+/* Enhanced particle effects */
+@keyframes floatParticle {
   0%, 100% {
-    background-image: url('/images/bat-wings-up.png');
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(5px, -5px);
   }
   50% {
-    background-image: url('/images/bat-wings-down.png');
+    transform: translate(10px, -10px);
+  }
+  75% {
+    transform: translate(5px, -15px);
   }
 }
 
-.bat {
+.particle {
   position: absolute;
-  width: 60px;
-  height: 30px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  animation: flap 0.3s infinite;
-  z-index: 1;
-}
-
-.bat-1 {
-  animation:
-    flap 0.3s infinite,
-    flyAcross1 15s linear infinite;
-}
-
-.bat-2 {
-  animation:
-    flap 0.25s infinite,
-    flyAcross2 20s linear infinite;
-  animation-delay: 2s;
-}
-
-.bat-3 {
-  animation:
-    flap 0.35s infinite,
-    flyAcross3 25s linear infinite;
-  animation-delay: 5s;
-}
-
-.shadow-glow {
-  box-shadow: 0 0 15px rgba(185, 28, 28, 0.5);
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInFromBlack {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.scroll-fade-in {
-  opacity: 0;
-  animation: fadeInUp 1s forwards;
-}
-
-.scroll-trigger {
-  opacity: 0;
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.scroll-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.cursor-follower {
-  position: fixed;
-  width: 40px;
-  height: 40px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(185,28,28,0.3) 0%, rgba(0,0,0,0) 70%);
-  mix-blend-mode: screen;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-:root {
-  --blood-intensity: 0;
-}
-
-@keyframes fadeSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-slide-up {
-  animation: fadeSlideUp 1s ease forwards;
-}
-
-.reveal-on-scroll {
   opacity: 0;
-  transition: all 1s cubic-bezier(0.5, 0, 0.1, 1);
+  animation: floatParticle 8s ease-in-out infinite, fadeIn 1s forwards;
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
 }
 
-.reveal-on-scroll.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+/* Smoother section transitions - optimize will-change usage */
+.title-section,
+.door-container,
+.video-section {
+  transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+  /* Only add will-change to elements that actually transform */
 }
 
-.parallax-layer-1 { z-index: 1; }
-.parallax-layer-2 { z-index: 2; }
-.parallax-layer-3 { z-index: 3; }
+/* Door zoom effect */
+.door-zoom {
+  transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform;
+}
 
-.blood-intensity-effect {
-  opacity: var(--blood-intensity, 0);
-  transition: opacity 0.3s ease;
+/* Optimize the transforms that use will-change */
+.transform-optimize {
+  will-change: transform;
+}
+
+/* Remove excessive will-change from these elements */
+.z-10, .z-20, .z-30 {
+  backface-visibility: hidden;
+}
+
+/* Blood drip animation enhancement */
+@keyframes bloodDrip {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0.4;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.8;
+  }
 }

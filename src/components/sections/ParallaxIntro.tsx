@@ -1,116 +1,30 @@
-import React, { useEffect, useRef } from 'react';
-
-declare global {
-  interface Window {
-    gsap: any;
-    ScrollTrigger: any;
-  }
-}
+import React, { useRef } from 'react';
+import ThrillerTitle from '../ui/ThrillerTitle';
+import NightmaresSubtitle from '../ui/NightmaresSubtitle';
+import { useParallaxAnimation, useEyeFollowMouse } from '../../hooks/useParallaxAnimation';
 
 const ParallaxIntro: React.FC = () => {
+  // Create refs for animation targets
   const parallaxRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const titleContainerRef = useRef<HTMLDivElement>(null);
   const eyesRef = useRef<HTMLDivElement>(null);
   const bloodRef = useRef<HTMLDivElement>(null);
   const handRef = useRef<HTMLDivElement>(null);
   const fogRef = useRef<HTMLDivElement>(null);
   
-  useEffect(() => {
-    const gsap = window.gsap;
-    const ScrollTrigger = window.ScrollTrigger;
-    
-    gsap.registerPlugin(ScrollTrigger);
-    
-    // Clear any existing ScrollTriggers to prevent conflicts
-    ScrollTrigger.getAll().forEach((st: any) => st.kill());
-    
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: parallaxRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: 1.5, // Increase for smoother scrubbing effect
-        pin: true,
-        anticipatePin: 1, // Helps with smoother pinning
-        pinSpacing: true,
-        markers: false,
-        id: "parallax-intro", // Unique identifier to prevent conflicts
-        invalidateOnRefresh: true, // Recalculate positions on refresh
-        fastScrollEnd: true, // Better performance
-      }
-    });
-    
-    // Main timeline animations
-    tl.to(titleRef.current, {
-      scale: 1.5,
-      y: -100,
-      duration: 2,
-      ease: "power1.inOut" // Smoother ease
-    }, 0);
-    
-    tl.to(eyesRef.current, {
-      y: -150,
-      scale: 1.2,
-      opacity: 0.8,
-      duration: 3,
-      ease: "power1.inOut"
-    }, 0);
-    
-    tl.to(bloodRef.current, {
-      height: "100%",
-      duration: 4,
-      ease: "power1.inOut"
-    }, 0);
-    
-    tl.to(handRef.current, {
-      y: -80,
-      x: 20,
-      rotation: 10,
-      duration: 3,
-      ease: "power1.inOut"
-    }, 0);
-    
-    tl.to(fogRef.current, {
-      opacity: 0.7,
-      scale: 1.3,
-      duration: 4,
-      ease: "power1.inOut"
-    }, 0);
-    
-    // Separate timeline for eye animation
-    const eyesSt = gsap.timeline({
-      repeat: -1,
-      yoyo: true
-    });
-    
-    eyesSt.to(".eye-pupil", {
-      scale: 1.2,
-      duration: 0.5,
-      stagger: 0.1,
-      ease: "sine.inOut" // Smoother sine ease
-    });
-    
-    return () => {
-      tl.kill();
-      eyesSt.kill();
-      ScrollTrigger.getAll().forEach((st: any) => st.kill());
-    };
-  }, []);
+  // Use custom hooks
+  const { scrollProgress } = useParallaxAnimation({
+    parallaxRef,
+    titleRef,
+    titleContainerRef,
+    eyesRef,
+    bloodRef,
+    handRef,
+    fogRef
+  });
   
-  const followMouse = (e: React.MouseEvent) => {
-    const eyeBalls = document.querySelectorAll('.eye-pupil');
-    eyeBalls.forEach((ball) => {
-      const rect = (ball as HTMLElement).getBoundingClientRect();
-      const x = (e.clientX - rect.left) / 25;
-      const y = (e.clientY - rect.top) / 25;
-      window.gsap.to(ball, {
-        x: x,
-        y: y,
-        duration: 0.3,
-        overwrite: "auto" // Prevent conflicting animations
-      });
-    });
-  };
+  const { followMouse } = useEyeFollowMouse();
   
   return (
     <div 
@@ -124,18 +38,19 @@ const ParallaxIntro: React.FC = () => {
       />
       
       <div
+        ref={titleContainerRef}
         className="absolute w-full h-full flex flex-col items-center justify-center z-30"
+        style={{
+          transition: 'background-color 0.3s ease',
+          backgroundColor: `rgba(0, 0, 0, ${scrollProgress * 0.7})`,
+        }}
       >
-        <h1 
-          ref={titleRef} 
-          className="text-8xl md:text-9xl font-creepy text-red-600 tracking-widest flicker-anim"
-        >
-          THRILLER
-        </h1>
+        <ThrillerTitle 
+          scrollProgress={scrollProgress} 
+          titleRef={titleRef} 
+        />
         
-        <p className="text-xl md:text-2xl text-gray-400 mt-4 font-sans tracking-widest animate-fade-in">
-          YOUR NIGHTMARES AWAIT
-        </p>
+        <NightmaresSubtitle scrollProgress={scrollProgress} />
       </div>
       
       <div
