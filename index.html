@@ -4,11 +4,14 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; frame-src https://www.youtube.com; img-src 'self' data: blob:;">
     <title>ThrillerKah</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:wght@400;600;700&family=Creepster&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:wght@400;600;700&family=Nosifer&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
     <script>
       tailwind.config = {
         darkMode: 'class',
@@ -30,12 +33,15 @@
             fontFamily: {
               sans: ['Crimson Pro', 'serif'],
               display: ['Bebas Neue', 'sans-serif'],
-              creepy: ['Creepster', 'cursive']
+              creepy: ['Nosifer', 'Impact', 'fantasy']
             },
             animation: {
               'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
               'flicker': 'flicker 5s linear infinite',
               'float': 'float 6s ease-in-out infinite',
+              'float-slow': 'float 10s ease-in-out infinite',
+              'float-medium': 'float 8s ease-in-out infinite',
+              'float-fast': 'float 6s ease-in-out infinite',
               'creepy-float': 'creepyFloat 6s ease-in-out infinite',
               'blood-drip': 'bloodDrip 2s ease-out forwards',
               'text-reveal': 'textReveal 1.5s cubic-bezier(0.77, 0, 0.18, 1) forwards',
@@ -92,7 +98,32 @@
       }
     </script>
     <style>
-      /* Custom animations and effects */
+      /* Font loading optimization */
+      @font-face {
+        font-family: 'Creepster';
+        font-display: swap;
+        font-weight: 400;
+        font-style: normal;
+      }
+      
+      @font-face {
+        font-family: 'Nosifer';
+        font-display: swap;
+        font-weight: 400;
+        font-style: normal;
+      }
+      
+      /* Ensure text remains visible during font loading */
+      html {
+        font-display: swap;
+      }
+      
+      /* ScrollTrigger visibility class */
+      .opacity-0.visible {
+        opacity: 1 !important;
+        transition: opacity 1.2s ease-in-out;
+      }
+      
       .text-shadow {
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
       }
