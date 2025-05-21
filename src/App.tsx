@@ -7,8 +7,12 @@ import Features from './components/sections/Features'
 import Gallery from './components/sections/Gallery'
 import About from './components/sections/About'
 import Contact from './components/sections/Contact'
+import ParallaxIntro from './components/sections/ParallaxIntro'
 import { useScrollAnimation } from './hooks/useScrollAnimation'
 import { useGlitchEffect } from './hooks/useGlitchEffect'
+
+// Scroll value for parallax section
+const PARALLAX_SECTION_HEIGHT = "100vh";
 
 function App() {
   const { revealedItems, activeSection, scrollY } = useScrollAnimation()
@@ -28,6 +32,12 @@ function App() {
         scrollY={scrollY}
         isGlitching={isGlitching}
       />
+      
+      <ParallaxIntro 
+        onGlitchTrigger={triggerGlitch} 
+      />
+      
+      <div style={{ height: PARALLAX_SECTION_HEIGHT }}></div>
       
       <Hero
         isGlitching={isGlitching}
