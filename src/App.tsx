@@ -240,14 +240,14 @@ function App() {
           </div>
           
           <p className="text-xl md:text-2xl text-[#cccccc] max-w-3xl text-center mb-10 animate-float">
-            Where your deepest <span className="text-[#8B0000] font-bold">fears</span> come to life
+            Multimedia <span className="text-[#8B0000] font-bold">System</span> 
           </p>
           
           <button 
             className="px-8 py-4 bg-[#8B0000] hover:bg-[#410000] text-white font-bold rounded-md transition-all duration-300 transform hover:scale-105 relative overflow-hidden shadow-lg shadow-[#8B0000]/30"
             onClick={handleEnterClick}
           >
-            <span className="relative z-10 tracking-wider text-lg">ENTER IF YOU DARE</span>
+            <span className="relative z-10 tracking-wider text-lg">REVEAL THE TRUTH</span>
             <span className="absolute inset-0 bg-white/10 animate-pulse opacity-0 hover:opacity-100 transition-opacity"></span>
           </button>
         </section>
@@ -255,7 +255,7 @@ function App() {
         <div className="flex flex-col items-center justify-start min-h-screen transition-all duration-1000">
           <div ref={teamRef} className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <h2 className="text-4xl md:text-6xl font-bold text-[#8B0000] mb-12 animate-flicker horror-text text-center">
-              TEAM MEMBERS
+              HAUNTED MEMBERS
             </h2>            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
               {[
                 "2702280352 - Marvel Collin",
