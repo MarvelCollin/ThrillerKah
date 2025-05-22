@@ -44,51 +44,44 @@
         }
       }
     </script>
+    <!-- Font loading optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Disable font rendering blocking -->
     <style>
+      /* Eliminate content reflow */
       body {
         margin: 0;
         padding: 0;
         background-color: #0a0505;
         color: #ffffff;
       }
+      /* Preemptively hide any flash of unstyled content */
       .hero-section {
         opacity: 0;
         transition: opacity 0.3s ease;
       }
+      /* Performance hint for the browser */
       .title-main, .blood-drip {
         will-change: opacity;
       }
-      h1, h2, h3, h4, h5, h6 {
-        margin-top: 0;
-        margin-bottom: 0.5rem;
-        line-height: 1.2;
-      }
-      h1 {
-        font-size: 2.5rem;
-      }
-      @media (min-width: 768px) {
-        h1 {
-          font-size: 3.5rem;
-        }
-      }
-      .horror-text {
-        text-shadow: 0 0 8px rgba(139, 0, 0, 0.6);
-      }
     </style>
     <title>ThrillerKah</title>
-    <script type="module" crossorigin src="/ThrillerKah/assets/index-e7e359d5.js"></script>
+    <script type="module" crossorigin src="/ThrillerKah/assets/index-814dc780.js"></script>
+    <link rel="stylesheet" href="/ThrillerKah/assets/index-8d0366ce.css">
   </head>
   <body>
     <div id="root"></div>
     
     <script>
+      // Prioritize loading critical resources
       document.addEventListener('DOMContentLoaded', () => {
         if ('connection' in navigator && navigator.connection.saveData) {
+          // Disable animations if the user has data-saver mode on
           document.documentElement.classList.add('data-saver');
         }
+        // Show content as soon as main content is loaded
         setTimeout(() => {
           const heroSection = document.querySelector('.hero-section');
           if (heroSection) heroSection.style.opacity = 1;
