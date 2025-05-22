@@ -7,14 +7,11 @@ function App() {
   const titleRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const teamRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isEntered, setIsEntered] = useState(false);
   
   const handleMouseMove = (e: MouseEvent) => {
     const x = (e.clientX / window.innerWidth) * 100;
     const y = (e.clientY / window.innerHeight) * 100;
-    
-    setMousePosition({ x, y });
     
     if (document.documentElement) {
       document.documentElement.style.setProperty('--x', `${x}%`);
@@ -25,7 +22,8 @@ function App() {
   useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
     
-    if (titleRef.current) {      gsap.fromTo(
+    if (titleRef.current) {
+      gsap.fromTo(
         titleRef.current,
         { opacity: 0, y: -100 },
         { 
@@ -35,7 +33,9 @@ function App() {
           ease: "power3.out" 
         }
       );
-    }    const fogElements = document.querySelectorAll('.fog-element');
+    }
+    
+    const fogElements = document.querySelectorAll('.fog-element');
     fogElements.forEach((fog, index) => {
       gsap.to(fog, {
         x: `${(index % 2 === 0 ? '+=' : '-=')}${Math.random() * 20 + 15}%`, 
@@ -47,25 +47,55 @@ function App() {
       });
     });
 
-    // Smoother blood drip creation
     const createBloodDrip = () => {
       if (!containerRef.current) return;
       
       const drip = document.createElement('div');
-      drip.className = 'absolute w-1 h-6 bg-[#8B0000] rounded-b-full animate-blood-drip';
-      drip.style.left = `${Math.random() * 100}%`;
-      drip.style.top = '0';
-      drip.style.opacity = '0';
+      const dripWidth = Math.random() * 2 + 0.5;
+      const dripHeight = Math.random() * 10 + 4;
+      const dripOpacity = Math.random() * 0.3 + 0.7;
+      
+      drip.className = 'absolute bg-[#8B0000] rounded-b-full animate-blood-drip';
+      drip.style.cssText = `
+        width: ${dripWidth}px; 
+        height: ${dripHeight}px; 
+        left: ${Math.random() * 100}%; 
+        top: 0; 
+        opacity: 0;
+        filter: blur(${dripWidth / 4}px);
+        transform: translate3d(0, 0, 0);
+        will-change: transform, opacity;
+      `;
+      
       containerRef.current.appendChild(drip);
       
-      setTimeout(() => {
-        drip.remove();
-      }, 4000);
+      gsap.timeline()
+        .to(drip, {
+          opacity: dripOpacity,
+          duration: 0.5,
+          ease: "power1.in"
+        })
+        .to(drip, {
+          y: window.innerHeight,
+          duration: 3 + Math.random() * 2,
+          ease: "power2.in",
+          delay: Math.random() * 0.5
+        })
+        .to(drip, {
+          opacity: 0,
+          duration: 0.5,
+          ease: "power1.out",
+          onComplete: () => drip.remove()
+        }, "-=0.5");
     };
 
     
-    const bloodInterval = setInterval(createBloodDrip, 3000);
+    const createRandomDrip = () => {
+      createBloodDrip();
+      setTimeout(createRandomDrip, Math.random() * 3000 + 1000);
+    };
     
+    createRandomDrip();
     
     const createSpiderWebs = () => {
       if (!containerRef.current) return;
@@ -79,7 +109,7 @@ function App() {
       
       corners.forEach((position) => {
         const web = document.createElement('div');
-        web.className = 'spider-web absolute';
+        web.className = 'spider-web absolute opacity-0';
         
         Object.entries(position).forEach(([key, value]) => {
           if (key !== 'rotate') {
@@ -88,15 +118,20 @@ function App() {
         });
         
         if (position.rotate) {
-          web.style.transform = `rotate(${position.rotate}deg)`;
+          web.style.transform = `rotate(${position.rotate}deg) translate3d(0, 0, 0)`;
         }
         
         containerRef.current?.appendChild(web);
+        
+        gsap.to(web, {
+          opacity: 0.3,
+          duration: 2,
+          delay: Math.random() * 2
+        });
       });
     };
     
     createSpiderWebs();
-    
     
     const createBloodSplatters = () => {
       if (!containerRef.current) return;
@@ -104,10 +139,25 @@ function App() {
       for (let i = 0; i < 5; i++) {
         const splatter = document.createElement('div');
         splatter.className = 'blood-splatter';
-        splatter.style.top = `${Math.random() * 100}%`;
-        splatter.style.left = `${Math.random() * 100}%`;
-        splatter.style.transform = `scale(${Math.random() * 1.5 + 0.5}) rotate(${Math.random() * 360}deg)`;
+        
+        const scale = Math.random() * 1.5 + 0.5;
+        const rotation = Math.random() * 360;
+        
+        splatter.style.cssText = `
+          top: ${Math.random() * 100}%;
+          left: ${Math.random() * 100}%;
+          transform: scale(${scale}) rotate(${rotation}deg) translate3d(0, 0, 0);
+          opacity: 0;
+          will-change: transform, opacity;
+        `;
+        
         containerRef.current.appendChild(splatter);
+        
+        gsap.to(splatter, {
+          opacity: 0.2 + (Math.random() * 0.1),
+          duration: 2 + Math.random() * 3,
+          delay: Math.random() * 3
+        });
       }
     };
     
@@ -115,19 +165,50 @@ function App() {
     
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      clearInterval(bloodInterval);
     };
   }, []);
   
   const handleEnterClick = () => {
     setIsEntered(true);
     
-    // Smoother background transition
     if (containerRef.current) {
-      gsap.to(containerRef.current, {
+      const tl = gsap.timeline();
+      
+      tl.to(containerRef.current, {
+        backgroundColor: 'rgba(5, 0, 0, 0.9)',
+        duration: 1.5,
+        ease: "power2.in"
+      })
+      .to(containerRef.current, {
         backgroundColor: '#0a0505',
-        duration: 3, // Longer transition
-        ease: "power2.inOut"
+        duration: 2,
+        ease: "power2.out"
+      });
+      
+      const flash = document.createElement('div');
+      flash.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background-color: rgba(139, 0, 0, 0.1);
+        z-index: 100;
+        pointer-events: none;
+        opacity: 0;
+      `;
+      
+      document.body.appendChild(flash);
+      
+      gsap.to(flash, {
+        opacity: 0.3,
+        duration: 0.2,
+        ease: "power1.in",
+        onComplete: () => {
+          gsap.to(flash, {
+            opacity: 0,
+            duration: 0.5,
+            ease: "power1.out",
+            onComplete: () => flash.remove()
+          });
+        }
       });
     }
 
@@ -209,7 +290,6 @@ function App() {
             </div>
           </div>
           
-          {/* Video Section */}
           <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-24 mt-12">
             <VideoFrame 
               videoId="dQw4w9WgXcQ"

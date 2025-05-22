@@ -44,32 +44,6 @@ const BloodRain = () => {
       );
     };
     
-    const createSplatter = (drop: HTMLDivElement) => {
-      if (!containerRef.current) return;
-      
-      const leftPos = drop.style.left;
-      
-      const splatter = document.createElement('div');
-      splatter.className = 'blood-splatter-small';
-      splatter.style.left = leftPos;
-      splatter.style.bottom = '0';
-      splatter.style.opacity = '0.8';
-      
-      const size = Math.random() * 10 + 5;
-      splatter.style.width = `${size}px`;
-      splatter.style.height = `${size/2}px`;
-      
-      containerRef.current.appendChild(splatter);
-      
-      gsap.to(splatter, {
-        opacity: 0,
-        scale: 1.5,
-        duration: 2,
-        ease: "power1.out",
-        onComplete: () => splatter.remove()
-      });
-    };
-    
     const createBloodSplash = () => {
       if (!containerRef.current) return;
       

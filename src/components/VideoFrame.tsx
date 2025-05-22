@@ -10,7 +10,7 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ videoId, title }) => {
     position: 'relative',
     width: '100%',
     maxWidth: '1200px',
-    paddingTop: '56.25%', // 16:9 Aspect Ratio
+    paddingTop: '56.25%',
     overflow: 'hidden',
     borderRadius: '0.75rem',
     boxShadow: '0 0 30px rgba(139, 0, 0, 0.3)',
@@ -32,9 +32,10 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ videoId, title }) => {
         <h3 className="text-3xl lg:text-4xl font-bold text-[#8B0000] mb-8 text-center horror-text animate-flicker">
           {title}
         </h3>
-      )}      <div style={containerStyle}>
+      )}
+      <div style={containerStyle}>
         <iframe
-          src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+          src={`https://www.youtube.com/embed/${videoId}`}
           title={title || 'YouTube video'}
           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
           allowFullScreen
