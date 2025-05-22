@@ -44,8 +44,7 @@ Error generating stack: `+o.message+`
       z-index: 1;
       pointer-events: none;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-      will-change: transform;
-      transform: translate3d(0, 0, 0);
+      transform: translate(0, 0);
       backface-visibility: hidden;
     `,e.current.appendChild(n),t.current.push(n);const r=document.createElement("div");r.style.cssText=`
       position: fixed;
@@ -59,8 +58,6 @@ Error generating stack: `+o.message+`
       pointer-events: none;
       z-index: 2;
       opacity: 0;
-      transform: translate3d(0, 0, 0);
-      will-change: transform, opacity;
       transition: opacity 2.5s ease-out;
     `,e.current.appendChild(r),t.current.push(r),setTimeout(()=>{r.style.opacity="0.9"},0),(()=>{const s=window.innerWidth>768?5:3;for(let c=0;c<s;c++){const m=c/s,h=document.createElement("div");h.className="fog-element",h.style.cssText=`
           position: fixed;
@@ -77,16 +74,15 @@ Error generating stack: `+o.message+`
           );
           filter: blur(${8+m*12}px);
           border-radius: 40%;
-          transform: translate3d(0, 0, 0) scale(${1-m*.3});
+          transform: scale(${1-m*.3});
           z-index: ${2+c};
           pointer-events: none;
-          will-change: transform, opacity;
           transition: opacity ${3+m*2}s ease-in-out;
           animation: fog-move ${45+20*(1-m)}s linear infinite alternate;
         `;const p=document.styleSheets[0],v=`
           @keyframes fog-move {
-            0% { transform: translate3d(0, 0, 0) scale(${1-m*.3}); }
-            100% { transform: translate3d(${100+Math.random()*20}vw, ${(Math.random()-.5)*50}px, 0) scale(${1-m*.3}); }
+            0% { transform: translate(0, 0) scale(${1-m*.3}); }
+            100% { transform: translate(${100+Math.random()*20}vw, ${(Math.random()-.5)*50}px) scale(${1-m*.3}); }
           }
         `;try{p.insertRule(v,p.cssRules.length)}catch(y){console.warn("Could not insert keyframes",y)}e.current.appendChild(h),t.current.push(h),setTimeout(()=>{h.style.opacity=`${.1+.1*(1-m)}`},1e3+m*500)}})();const o=document.createElement("div");o.className="vignette-effect",o.style.cssText=`
       position: fixed;
@@ -95,8 +91,6 @@ Error generating stack: `+o.message+`
       pointer-events: none;
       z-index: 5;
       opacity: 0;
-      transform: translate3d(0, 0, 0);
-      will-change: opacity;
       transition: opacity 4s ease-in-out;
     `,e.current.appendChild(o),t.current.push(o),setTimeout(()=>{o.style.opacity="1"},0);const i=document.createElement("div");return i.style.cssText=`
       position: fixed;
@@ -110,10 +104,8 @@ Error generating stack: `+o.message+`
       z-index: 4;
       opacity: 0;
       mix-blend-mode: overlay;
-      transform: translate3d(0, 0, 0);
-      will-change: opacity;
       transition: opacity 3s ease-in-out;
-    `,e.current.appendChild(i),t.current.push(i),setTimeout(()=>{i.style.opacity="1"},0),(()=>{const s=window.innerWidth>768?30:15;for(let c=0;c<s;c++){const m=document.createElement("div");m.className="bg-particle";const h=Math.random()*3+1,p=Math.random(),v=Math.random()*100+50;m.style.cssText=`
+    `,e.current.appendChild(i),t.current.push(i),setTimeout(()=>{i.style.opacity="1"},0),(()=>{const s=window.innerWidth>768?15:8;for(let c=0;c<s;c++){const m=document.createElement("div");m.className="bg-particle";const h=Math.random()*3+1,p=Math.random(),v=Math.random()*100+50;m.style.cssText=`
           position: fixed;
           width: ${h}px;
           height: ${h}px;
@@ -122,11 +114,10 @@ Error generating stack: `+o.message+`
           background-color: rgba(255, 255, 255, ${.1+p*.2});
           border-radius: 50%;
           filter: blur(${(1-p)*1.5}px);
-          transform: translate3d(0, 0, 0) scale(1);
+          transform: scale(1);
           z-index: ${Math.floor(p*5)+2};
           pointer-events: none;
           opacity: 0;
-          will-change: transform, opacity;
           transition: opacity ${2+Math.random()*3}s ease-out;
           animation: particle-fall ${v}s linear infinite;
         `;const y=document.styleSheets[0],S=`
@@ -134,21 +125,32 @@ Error generating stack: `+o.message+`
             0% { transform: translateY(0); }
             100% { transform: translateY(${window.innerHeight}px); }
           }
-        `;try{Array.from(y.cssRules).some(M=>M.type===CSSRule.KEYFRAMES_RULE&&M.name==="particle-fall")||y.insertRule(S,y.cssRules.length)}catch(M){console.warn("Could not insert keyframes",M)}e.current.appendChild(m),t.current.push(m),setTimeout(()=>{m.style.opacity=`${.3+Math.random()*.6}`},Math.random()*2e3)}})(),()=>{t.current.forEach(s=>{s.remove()})}},[]),O.jsx("div",{ref:e,className:"fixed inset-0 overflow-hidden pointer-events-none z-[-1] background-effects","aria-hidden":"true"})},Md=({videoId:e,title:t})=>{const n={position:"relative",width:"100%",maxWidth:"1200px",paddingTop:"56.25%",overflow:"hidden",borderRadius:"0.75rem",boxShadow:"0 0 30px rgba(139, 0, 0, 0.3)",margin:"0 auto"},r={position:"absolute",top:"0",left:"0",width:"100%",height:"100%",border:"2px solid #8B0000",borderRadius:"inherit"};return O.jsxs("div",{className:"video-container w-full",style:{scrollMarginTop:"2rem"},children:[t&&O.jsx("h3",{className:"text-3xl lg:text-4xl font-bold text-[#8B0000] mb-8 text-center horror-text animate-flicker",children:t}),O.jsx("div",{style:n,children:O.jsx("iframe",{src:`https://www.youtube.com/embed/${e}`,title:t||"YouTube video",allow:"autoplay; clipboard-write; encrypted-media; picture-in-picture",allowFullScreen:!0,style:r})})]})};function Od(){const e=Re.useRef(null),t=Re.useRef(null),n=Re.useRef(null),[r,l]=Re.useState(!1);Re.useEffect(()=>{const i=p=>{const v=p.clientX/window.innerWidth*100,y=p.clientY/window.innerHeight*100;document.documentElement&&(document.documentElement.style.setProperty("--x",`${v}%`),document.documentElement.style.setProperty("--y",`${y}%`))};window.addEventListener("mousemove",i),e.current&&(e.current.style.opacity="0",e.current.style.transform="translateY(-100px)",e.current.style.transition="opacity 2.5s ease-out, transform 2.5s ease-out",setTimeout(()=>{e.current&&(e.current.style.opacity="1",e.current.style.transform="translateY(0)")},100)),document.querySelectorAll(".fog-element").forEach((p,v)=>{const y=p;y.style.transition="opacity 2s ease-in-out, transform 30s ease-in-out",y.style.transform=`translateX(${(v%2===0?"":"-")+(Math.random()*20+15)}%)`,y.style.opacity=(Math.random()*.2+.1).toString()});const s=()=>{if(!t.current)return;const p=document.createElement("div"),v=Math.random()*2+.5,y=Math.random()*10+4;p.className="absolute bg-[#8B0000] rounded-b-full animate-blood-drip",p.style.cssText=`
+        `;try{Array.from(y.cssRules).some(M=>M.type===CSSRule.KEYFRAMES_RULE&&M.name==="particle-fall")||y.insertRule(S,y.cssRules.length)}catch(M){console.warn("Could not insert keyframes",M)}e.current.appendChild(m),t.current.push(m),setTimeout(()=>{m.style.opacity=`${.3+Math.random()*.6}`},Math.random()*2e3)}})(),()=>{t.current.forEach(s=>{s.remove()})}},[]),O.jsx("div",{ref:e,className:"fixed inset-0 overflow-hidden pointer-events-none z-[-1]","aria-hidden":"true"})},Md=({videoId:e,title:t})=>{const n={position:"relative",width:"100%",maxWidth:"1200px",paddingTop:"56.25%",overflow:"hidden",borderRadius:"0.75rem",boxShadow:"0 0 30px rgba(139, 0, 0, 0.3)",margin:"0 auto"},r={position:"absolute",top:"0",left:"0",width:"100%",height:"100%",border:"2px solid #8B0000",borderRadius:"inherit"};return O.jsxs("div",{className:"video-container w-full",style:{scrollMarginTop:"2rem"},children:[t&&O.jsx("h3",{className:"text-3xl lg:text-4xl font-bold text-[#8B0000] mb-8 text-center horror-text animate-flicker",children:t}),O.jsx("div",{style:n,children:O.jsx("iframe",{src:`https://www.youtube.com/embed/${e}`,title:t||"YouTube video",allow:"autoplay; clipboard-write; encrypted-media; picture-in-picture",allowFullScreen:!0,style:r})})]})},Od=()=>{const e=document.createElement("style");e.textContent=`
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+    h1 {
+      font-size: 2.5rem;
+    }
+    @media (min-width: 768px) {
+      h1 {
+        font-size: 3.5rem;
+      }
+    }
+  `,document.head.appendChild(e)};function jd(){const e=Re.useRef(null),t=Re.useRef(null),n=Re.useRef(null),[r,l]=Re.useState(!1);Re.useEffect(()=>{Od();const i=p=>{const v=p.clientX/window.innerWidth*100,y=p.clientY/window.innerHeight*100;document.documentElement&&(document.documentElement.style.setProperty("--x",`${v}%`),document.documentElement.style.setProperty("--y",`${y}%`))};window.addEventListener("mousemove",i),e.current&&(e.current.style.opacity="0",e.current.style.transform="translateY(-100px)",e.current.style.transition="opacity 2.5s ease-out, transform 2.5s ease-out",setTimeout(()=>{e.current&&(e.current.style.opacity="1",e.current.style.transform="translateY(0)")},100)),document.querySelectorAll(".fog-element").forEach((p,v)=>{const y=p;y.style.transition="opacity 2s ease-in-out, transform 30s ease-in-out",y.style.transform=`translateX(${(v%2===0?"":"-")+(Math.random()*20+15)}%)`,y.style.opacity=(Math.random()*.2+.1).toString()});const s=()=>{if(!t.current)return;const p=document.createElement("div"),v=Math.random()*2+.5,y=Math.random()*10+4;p.className="absolute bg-[#8B0000] rounded-b-full animate-blood-drip",p.style.cssText=`
         width: ${v}px; 
         height: ${y}px; 
         left: ${Math.random()*100}%; 
         top: 0; 
         opacity: 0;
         filter: blur(${v/4}px);
-        transform: translate3d(0, 0, 0);
-        will-change: transform, opacity;
-      `,t.current.appendChild(p),setTimeout(()=>p.remove(),5e3)},c=()=>{s(),setTimeout(c,Math.random()*3e3+1e3)};return c(),(()=>{if(!t.current)return;[{top:0,left:0,rotate:0},{top:0,right:0,rotate:90},{bottom:0,left:0,rotate:-90},{bottom:0,right:0,rotate:180}].forEach(v=>{var S;const y=document.createElement("div");y.className="spider-web absolute opacity-0",Object.entries(v).forEach(([M])=>{M!=="rotate"&&(y.style[M]="0")}),v.rotate&&(y.style.transform=`rotate(${v.rotate}deg) translate3d(0, 0, 0)`),(S=t.current)==null||S.appendChild(y),setTimeout(()=>{y.style.opacity="0.3",y.style.transition="opacity 2s"},Math.random()*2e3)})})(),(()=>{if(t.current)for(let p=0;p<5;p++){const v=document.createElement("div");v.className="blood-splatter";const y=Math.random()*1.5+.5,S=Math.random()*360;v.style.cssText=`
+      `,t.current.appendChild(p),setTimeout(()=>p.remove(),5e3)},c=()=>{s(),setTimeout(c,Math.random()*3e3+1e3)};return c(),(()=>{if(!t.current)return;[{top:0,left:0,rotate:0},{top:0,right:0,rotate:90},{bottom:0,left:0,rotate:-90},{bottom:0,right:0,rotate:180}].forEach(v=>{var S;const y=document.createElement("div");y.className="spider-web absolute opacity-0",Object.entries(v).forEach(([M])=>{M!=="rotate"&&(y.style[M]="0")}),v.rotate&&(y.style.transform=`rotate(${v.rotate}deg)`),(S=t.current)==null||S.appendChild(y),setTimeout(()=>{y.style.opacity="0.3",y.style.transition="opacity 2s"},Math.random()*2e3)})})(),(()=>{if(t.current)for(let p=0;p<5;p++){const v=document.createElement("div");v.className="blood-splatter";const y=Math.random()*1.5+.5,S=Math.random()*360;v.style.cssText=`
           top: ${Math.random()*100}%;
           left: ${Math.random()*100}%;
-          transform: scale(${y}) rotate(${S}deg) translate3d(0, 0, 0);
+          transform: scale(${y}) rotate(${S}deg);
           opacity: 0;
-          will-change: transform, opacity;
         `,t.current.appendChild(v),setTimeout(()=>{v.style.opacity=(.2+Math.random()*.1).toString(),v.style.transition="opacity 2s"},Math.random()*3e3)}})(),()=>{window.removeEventListener("mousemove",i)}},[]);const o=()=>{if(l(!0),t.current){const i=document.createElement("div");i.style.cssText=`
         position: fixed;
         inset: 0;
@@ -156,4 +158,4 @@ Error generating stack: `+o.message+`
         z-index: 100;
         pointer-events: none;
         opacity: 0;
-      `,document.body.appendChild(i),i.style.transition="opacity 0.2s ease-in",i.style.opacity="0.3",setTimeout(()=>{i.style.transition="opacity 0.5s ease-out",i.style.opacity="0",setTimeout(()=>i.remove(),500)},200)}setTimeout(()=>{var i;(i=n.current)==null||i.scrollIntoView({behavior:"smooth"})},2e3)};return O.jsxs("div",{className:"min-h-screen overflow-hidden relative",ref:t,children:[O.jsx(Rd,{}),O.jsxs("div",{className:"fixed inset-0 pointer-events-none",children:[O.jsx("div",{className:"absolute top-0 left-0 w-40 h-40 border-t-2 border-l-2 border-[#8B0000]/20 rounded-br-3xl"}),O.jsx("div",{className:"absolute top-0 right-0 w-40 h-40 border-t-2 border-r-2 border-[#8B0000]/20 rounded-bl-3xl"}),O.jsx("div",{className:"absolute bottom-0 left-0 w-40 h-40 border-b-2 border-l-2 border-[#8B0000]/20 rounded-tr-3xl"}),O.jsx("div",{className:"absolute bottom-0 right-0 w-40 h-40 border-b-2 border-r-2 border-[#8B0000]/20 rounded-tl-3xl"})]}),r?O.jsxs("section",{className:"py-20 px-4",ref:n,children:[O.jsxs("h2",{className:"text-5xl md:text-6xl font-bold text-center mb-16 text-white horror-text animate-flicker",style:{fontFamily:"'Horror Font', sans-serif"},children:["Our Latest ",O.jsx("span",{className:"text-[#8B0000]",children:"Production"})]}),O.jsx("div",{className:"flex flex-col gap-24 mb-20",children:O.jsx(Md,{videoId:"dQw4w9WgXcQ",title:"Bloody Vengeance"})})]}):O.jsxs("section",{className:"hero-section relative flex flex-col items-center justify-center min-h-screen p-4",ref:e,children:[O.jsx("div",{className:"absolute top-20 w-40 h-40 bg-[#fffeec]/5 rounded-full blur-3xl animate-flicker"}),O.jsxs("div",{className:"relative mb-8",children:[O.jsxs("h1",{className:"text-7xl md:text-9xl font-bold tracking-widest text-center text-white animate-flicker horror-text",style:{fontFamily:"'Horror Font', sans-serif"},children:["THRILLER",O.jsx("span",{className:"text-[#8B0000]",children:"KAH"})]}),O.jsx("div",{className:"animate-pulse-shadow absolute inset-0 rounded-lg blur-md -z-10"})]}),O.jsxs("p",{className:"text-xl md:text-2xl text-[#cccccc] max-w-3xl text-center mb-10 animate-float",children:["Where your deepest ",O.jsx("span",{className:"text-[#8B0000] font-bold",children:"fears"})," come to life"]}),O.jsx("button",{className:"px-8 py-4 bg-[#8B0000] hover:bg-[#410000] text-white font-bold rounded-md transition-all duration-300 transform hover:scale-105 relative overflow-hidden shadow-lg shadow-[#8B0000]/30",onClick:o,children:O.jsx("span",{className:"relative z-10 tracking-wider text-lg",children:"ENTER IF YOU DARE"})})]})]})}Ql.createRoot(document.getElementById("root")).render(O.jsx(gc.StrictMode,{children:O.jsx(Od,{})}));
+      `,document.body.appendChild(i),i.style.transition="opacity 0.2s ease-in",i.style.opacity="0.3",setTimeout(()=>{i.style.transition="opacity 0.5s ease-out",i.style.opacity="0",setTimeout(()=>i.remove(),500)},200)}setTimeout(()=>{var i;(i=n.current)==null||i.scrollIntoView({behavior:"smooth"})},2e3)};return O.jsxs("div",{className:"min-h-screen overflow-hidden relative",ref:t,children:[O.jsx(Rd,{}),O.jsxs("div",{className:"fixed inset-0 pointer-events-none",children:[O.jsx("div",{className:"absolute top-0 left-0 w-40 h-40 border-t-2 border-l-2 border-[#8B0000]/20 rounded-br-3xl"}),O.jsx("div",{className:"absolute top-0 right-0 w-40 h-40 border-t-2 border-r-2 border-[#8B0000]/20 rounded-bl-3xl"}),O.jsx("div",{className:"absolute bottom-0 left-0 w-40 h-40 border-b-2 border-l-2 border-[#8B0000]/20 rounded-tr-3xl"}),O.jsx("div",{className:"absolute bottom-0 right-0 w-40 h-40 border-b-2 border-r-2 border-[#8B0000]/20 rounded-tl-3xl"})]}),r?O.jsxs("section",{className:"py-20 px-4",ref:n,children:[O.jsxs("h2",{className:"text-5xl md:text-6xl font-bold text-center mb-16 text-white horror-text animate-flicker",style:{fontFamily:"'Horror Font', sans-serif",margin:"0 0 1rem 0",fontSize:"clamp(2.5rem, 8vw, 6rem)",lineHeight:"1.2"},children:["Our Latest ",O.jsx("span",{className:"text-[#8B0000]",children:"Production"})]}),O.jsx("div",{className:"flex flex-col gap-24 mb-20",children:O.jsx(Md,{videoId:"dQw4w9WgXcQ",title:"Bloody Vengeance"})})]}):O.jsxs("section",{className:"hero-section relative flex flex-col items-center justify-center min-h-screen p-4",ref:e,children:[O.jsx("div",{className:"absolute top-20 w-40 h-40 bg-[#fffeec]/5 rounded-full blur-3xl animate-flicker"}),O.jsxs("div",{className:"relative mb-8",children:[O.jsxs("h1",{className:"text-7xl md:text-9xl font-bold tracking-widest text-center text-white animate-flicker horror-text",style:{fontFamily:"'Horror Font', sans-serif",margin:"0 0 0.5rem 0",fontSize:"clamp(3rem, 10vw, 9rem)",lineHeight:"1.1"},children:["THRILLER",O.jsx("span",{className:"text-[#8B0000]",children:"KAH"})]}),O.jsx("div",{className:"absolute inset-0 rounded-lg blur-md -z-10 animate-pulse"})]}),O.jsxs("p",{className:"text-xl md:text-2xl text-[#cccccc] max-w-3xl text-center mb-10",children:["Where your deepest ",O.jsx("span",{className:"text-[#8B0000] font-bold",children:"fears"})," come to life"]}),O.jsx("button",{className:"px-8 py-4 bg-[#8B0000] hover:bg-[#410000] text-white font-bold rounded-md transition-all duration-300 transform hover:scale-105 relative overflow-hidden shadow-lg shadow-[#8B0000]/30",onClick:o,children:O.jsx("span",{className:"relative z-10 tracking-wider text-lg",children:"ENTER IF YOU DARE"})})]})]})}Ql.createRoot(document.getElementById("root")).render(O.jsx(gc.StrictMode,{children:O.jsx(jd,{})}));
