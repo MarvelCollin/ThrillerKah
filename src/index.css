@@ -10,9 +10,10 @@ body {
 
 @font-face {
   font-family: 'Horror Font';
-  src: url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+  src: url('https://fonts.gstatic.com/s/creepster/v13/AlZy_zVUqJz4yMrniH4Rcn35.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 .spotlight {
@@ -70,23 +71,23 @@ body {
 }
 
 @keyframes flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {}
-  20%, 24%, 55% {}
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.8; }
 }
 
 .animate-flicker {
-  animation: flicker 5s infinite alternate;
+  animation: flicker 8s infinite alternate;
 }
 
 @keyframes blood-drip {
-  0% {}
-  5% {}
-  95% {}
-  100% {}
+  0% { opacity: 0; transform: translateY(-10px); }
+  15% { opacity: 0.8; }
+  85% { opacity: 0.8; }
+  100% { opacity: 0; transform: translateY(200px); }
 }
 
 .animate-blood-drip {
-  animation: blood-drip 4s ease-in forwards;
+  animation: blood-drip 5s ease-in forwards;
 }
 
 @keyframes float {
@@ -95,7 +96,7 @@ body {
 }
 
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
 @keyframes pulse-shadow {
@@ -133,6 +134,44 @@ body {
 /* Background container */
 .background-effects {
   will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Noise texture animation */
+@keyframes noise {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-1%, -1%); }
+  20% { transform: translate(-2%, 1%); }
+  30% { transform: translate(1%, -2%); }
+  40% { transform: translate(2%, 2%); }
+  50% { transform: translate(-2%, -1%); }
+  60% { transform: translate(1%, 1%); }
+  70% { transform: translate(-1%, 2%); }
+  80% { transform: translate(2%, -2%); }
+  90% { transform: translate(-2%, 1%); }
+}
+
+.noise-texture {
+  animation: noise 150s steps(10) infinite;
+}
+
+/* Smoother transitions for all elements */
+.bg-particle, .blood-drip, .blood-splatter, .blood-splash {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Add subtle animation to vignette */
+@keyframes pulse-vignette {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+}
+
+/* Create smoother text rendering */
+h1, h2, h3, p, span, button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 

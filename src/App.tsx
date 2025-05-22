@@ -9,6 +9,7 @@ function App() {
   const teamRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isEntered, setIsEntered] = useState(false);
+  
   const handleMouseMove = (e: MouseEvent) => {
     const x = (e.clientX / window.innerWidth) * 100;
     const y = (e.clientY / window.innerHeight) * 100;
@@ -24,33 +25,29 @@ function App() {
   useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
     
-    if (titleRef.current) {
-      gsap.fromTo(
+    if (titleRef.current) {      gsap.fromTo(
         titleRef.current,
         { opacity: 0, y: -100 },
         { 
           opacity: 1, 
           y: 0, 
-          duration: 2, 
-          ease: "power4.out" 
+          duration: 2.5, 
+          ease: "power3.out" 
         }
       );
-    }
-
-    
-    const fogElements = document.querySelectorAll('.fog-element');
+    }    const fogElements = document.querySelectorAll('.fog-element');
     fogElements.forEach((fog, index) => {
       gsap.to(fog, {
-        x: `${(index % 2 === 0 ? '+=' : '-=')}${Math.random() * 30 + 20}%`,
-        opacity: Math.random() * 0.3 + 0.2,
-        duration: Math.random() * 20 + 15,
+        x: `${(index % 2 === 0 ? '+=' : '-=')}${Math.random() * 20 + 15}%`, 
+        opacity: Math.random() * 0.2 + 0.1, 
+        duration: Math.random() * 25 + 20, 
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut"
       });
     });
 
-    
+    // Smoother blood drip creation
     const createBloodDrip = () => {
       if (!containerRef.current) return;
       
@@ -60,7 +57,6 @@ function App() {
       drip.style.top = '0';
       drip.style.opacity = '0';
       containerRef.current.appendChild(drip);
-      
       
       setTimeout(() => {
         drip.remove();
@@ -84,7 +80,6 @@ function App() {
       corners.forEach((position) => {
         const web = document.createElement('div');
         web.className = 'spider-web absolute';
-        
         
         Object.entries(position).forEach(([key, value]) => {
           if (key !== 'rotate') {
@@ -118,18 +113,20 @@ function App() {
     
     createBloodSplatters();
     
-    
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       clearInterval(bloodInterval);
     };
   }, []);
+  
   const handleEnterClick = () => {
     setIsEntered(true);
-        if (containerRef.current) {
+    
+    // Smoother background transition
+    if (containerRef.current) {
       gsap.to(containerRef.current, {
         backgroundColor: '#0a0505',
-        duration: 2,
+        duration: 3, // Longer transition
         ease: "power2.inOut"
       });
     }
@@ -138,6 +135,7 @@ function App() {
       teamRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 2000);
   };
+  
   return (
     <div className="min-h-screen overflow-hidden relative" ref={containerRef}>
       <BackgroundEffects />
@@ -147,7 +145,9 @@ function App() {
         <div className="absolute top-0 right-0 w-40 h-40 border-t-2 border-r-2 border-[#8B0000]/20 rounded-bl-3xl"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 border-b-2 border-l-2 border-[#8B0000]/20 rounded-tr-3xl"></div>
         <div className="absolute bottom-0 right-0 w-40 h-40 border-b-2 border-r-2 border-[#8B0000]/20 rounded-tl-3xl"></div>
-      </div>      {!isEntered ? (
+      </div>
+      
+      {!isEntered ? (
         <section className="hero-section relative flex flex-col items-center justify-center min-h-screen p-4" ref={titleRef}>
           <div className="absolute top-20 w-40 h-40 bg-[#fffeec]/5 rounded-full blur-3xl animate-flicker"></div>
           <div className="relative mb-8">
@@ -169,12 +169,14 @@ function App() {
             <span className="relative z-10 tracking-wider text-lg">ENTER IF YOU DARE</span>
             <span className="absolute inset-0 bg-white/10 animate-pulse opacity-0 hover:opacity-100 transition-opacity"></span>
           </button>
-        </section>      ) : (        <div className="flex flex-col items-center justify-start min-h-screen transition-all duration-1000">
+        </section>
+      ) : (
+        <div className="flex flex-col items-center justify-start min-h-screen transition-all duration-1000">
           <div ref={teamRef} className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <h2 className="text-4xl md:text-6xl font-bold text-[#8B0000] mb-12 animate-flicker horror-text text-center">
               TEAM MEMBERS
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">{[
+            </h2>            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+              {[
                 "2702280352 - Marvel Collin",
                 "2702249801 - Hansel Jonathan Huistra",
                 "2702280384 - Mike Grady Layandri",
@@ -185,7 +187,8 @@ function App() {
                 "2702317512 - Agus Irfandono"
               ].map((member) => {
                 const [nim, name] = member.split(" - ");
-                return (                  <div 
+                return (
+                  <div 
                     key={nim} 
                     className="group bg-gradient-to-br from-black/60 to-[#200000]/60 backdrop-blur-md p-6 lg:p-8 rounded-xl 
                              border border-[#8B0000]/30 hover:border-[#8B0000] transition-all duration-500 
@@ -193,7 +196,8 @@ function App() {
                              cursor-pointer overflow-hidden relative"
                   >
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8B0000]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8B0000]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>                    <h3 className="text-xl lg:text-2xl font-bold mb-3 text-white group-hover:text-[#8B0000] transition-colors duration-300 line-clamp-2">
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8B0000]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <h3 className="text-xl lg:text-2xl font-bold mb-3 text-white group-hover:text-[#8B0000] transition-colors duration-300 line-clamp-2">
                       {name}
                     </h3>
                     <p className="text-base lg:text-lg text-[#cccccc] tracking-wider font-mono opacity-80 group-hover:opacity-100 transition-opacity duration-300">
@@ -203,7 +207,9 @@ function App() {
                 );
               })}
             </div>
-          </div>          {/* Video Section */}
+          </div>
+          
+          {/* Video Section */}
           <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-24 mt-12">
             <VideoFrame 
               videoId="dQw4w9WgXcQ"

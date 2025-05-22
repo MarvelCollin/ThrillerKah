@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -16,24 +15,25 @@
               'fog-gray': '#b8b8b8',
             },
             animation: {
-              'flicker': 'flicker 2s infinite',
-              'blood-drip': 'blood-drip 4s ease-in infinite',
-              'float': 'float 3s ease-in-out infinite',
-              'pulse-shadow': 'pulse-shadow 2s infinite',
+              'flicker': 'flicker 8s infinite alternate',
+              'blood-drip': 'blood-drip 5s ease-in forwards',
+              'float': 'float 8s cubic-bezier(0.45, 0, 0.55, 1) infinite',
+              'pulse-shadow': 'pulse-shadow 3s ease-in-out infinite',
             },
             keyframes: {
               flicker: {
-                '0%, 100%': { opacity: '1' },
-                '50%': { opacity: '0.7' },
+                '0%, 19%, 21%, 23%, 25%, 54%, 56%, 100%': { opacity: '1' },
+                '20%, 24%, 55%': { opacity: '0.8' },
               },
               'blood-drip': {
                 '0%': { transform: 'translateY(-10px)', opacity: '0' },
-                '50%': { transform: 'translateY(100px)', opacity: '1' },
+                '15%': { transform: 'translateY(50px)', opacity: '0.8' },
+                '85%': { transform: 'translateY(150px)', opacity: '0.8' },
                 '100%': { transform: 'translateY(200px)', opacity: '0' },
               },
               float: {
                 '0%, 100%': { transform: 'translateY(0)' },
-                '50%': { transform: 'translateY(-20px)' },
+                '50%': { transform: 'translateY(-10px)' },
               },
               'pulse-shadow': {
                 '0%, 100%': { boxShadow: '0 0 20px 10px rgba(139, 0, 0, 0.3)' },
@@ -44,9 +44,10 @@
         }
       }
     </script>
-    <!-- Preload critical fonts -->
-    <link rel="preload" as="font" href="https://fonts.gstatic.com/s/cinzel/v23/8vIU7ww63mVu7gtR-kwKxNvkNOjw-tbnfYPlDX5Z.woff2" crossorigin />
-    <link rel="preload" as="font" href="https://fonts.gstatic.com/s/robotomono/v22/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2" crossorigin />
+    <!-- Font loading optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <!-- Disable font rendering blocking -->
     <style>
       /* Eliminate content reflow */
@@ -64,12 +65,6 @@
       /* Performance hint for the browser */
       .title-main, .blood-drip {
         will-change: opacity;
-      }
-      
-      @font-face {
-        font-family: 'Horror Font';
-        src: url('https://fonts.gstatic.com/s/creepster/v13/AlZy_zVUqJz4yMrniH4Rcn35.woff2') format('woff2');
-        font-display: swap;
       }
     </style>
     <title>ThrillerKah</title>
