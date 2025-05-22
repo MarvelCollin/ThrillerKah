@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/ThrillerKah/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #0a0505;
+        color: #ffffff;
+      }
+      .hero-section {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .title-main, .blood-drip {
+        will-change: opacity;
+      }
+    </style>
+    <title>ThrillerKah</title>
+    <script type="module" crossorigin src="/ThrillerKah/assets/index-e7d0078f.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        if ('connection' in navigator && navigator.connection.saveData) {
+          document.documentElement.classList.add('data-saver');
+        }
+        setTimeout(() => {
+          const heroSection = document.querySelector('.hero-section');
+          if (heroSection) heroSection.style.opacity = 1;
+        }, 100);
+      });
+    </script>
+  </body>
+</html>
