@@ -113,7 +113,7 @@ function App() {
         
         Object.entries(position).forEach(([key, value]) => {
           if (key !== 'rotate') {
-            web.style[key as any] = '0';
+            web.style[key as any] = `${value}`;
           }
         });
         
@@ -168,49 +168,7 @@ function App() {
     };
   }, []);
   
-  const handleEnterClick = () => {
-    setIsEntered(true);
-    
-    if (containerRef.current) {
-      const tl = gsap.timeline();
-      
-      tl.to(containerRef.current, {
-        backgroundColor: 'rgba(5, 0, 0, 0.9)',
-        duration: 1.5,
-        ease: "power2.in"
-      })
-      .to(containerRef.current, {
-        backgroundColor: '#0a0505',
-        duration: 2,
-        ease: "power2.out"
-      });
-      
-      const flash = document.createElement('div');
-      flash.style.cssText = `
-        position: fixed;
-        inset: 0;
-        background-color: rgba(139, 0, 0, 0.1);
-        z-index: 100;
-        pointer-events: none;
-        opacity: 0;
-      `;
-      
-      document.body.appendChild(flash);
-      
-      gsap.to(flash, {
-        opacity: 0.3,
-        duration: 0.2,
-        ease: "power1.in",
-        onComplete: () => {
-          gsap.to(flash, {
-            opacity: 0,
-            duration: 0.5,
-            ease: "power1.out",
-            onComplete: () => flash.remove()
-          });
-        }
-      });
-    }
+    const handleEnterClick = () => {    setIsEntered(true);        if (containerRef.current) {      const tl = gsap.timeline();            tl.to(containerRef.current, {        backgroundColor: 'rgba(5, 0, 0, 0.9)',        duration: 1.5,        ease: "power2.in"      })      .to(containerRef.current, {        backgroundColor: '#0a0505',        duration: 2,        ease: "power2.out"      });            const flash = document.createElement('div');      flash.style.cssText = `        position: fixed;        inset: 0;        background-color: rgba(139, 0, 0, 0.1);        z-index: 100;        pointer-events: none;        opacity: 0;      `;            document.body.appendChild(flash);            gsap.to(flash, {        opacity: 0.3,        duration: 0.2,        ease: "power1.in",        onComplete: () => {          gsap.to(flash, {            opacity: 0,            duration: 0.5,            ease: "power1.out",            onComplete: () => flash.remove()          });        }      });    }
 
     setTimeout(() => {
       teamRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -290,10 +248,10 @@ function App() {
             </div>
           </div>
           
-          <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-24 mt-12">
+          <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
             <VideoFrame 
               videoId="dQw4w9WgXcQ"
-              title="Watch If You Dare"
+              title="Our Video"
             />
           </div>
         </div>

@@ -1,11 +1,95 @@
+:root {
+  --x: 50%;
+  --y: 50%;
+}
+
 body {
   margin: 0;
-  padding: 0;
-  background: #070000;
-  background-image: radial-gradient(circle at center, #120000 0%, #000000 100%);
-  color: #ffffff;
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #0a0505;
+  color: #fff;
   overflow-x: hidden;
+}
+
+.video-container {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.horror-text {
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+.animate-flicker {
+  animation: flicker 3s infinite alternate;
+}
+
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.8;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-pulse-shadow {
+  animation: pulse-shadow 4s ease-in-out infinite;
+}
+
+@keyframes pulse-shadow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(139, 0, 0, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(139, 0, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 0, 0, 0);
+  }
+}
+
+.animate-blood-drip {
+  animation: blood-drip 5s ease-in-out;
+}
+
+.spider-web {
+  width: 150px;
+  height: 150px;
+  background-image: url('/images/spider-web.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.blood-splatter {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background-image: url('/images/blood-splatter.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
 }
 
 @font-face {
@@ -15,231 +99,3 @@ body {
   font-style: normal;
   font-display: swap;
 }
-
-.spotlight {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background: radial-gradient();
-  z-index: 10;
-  opacity: 0.8;
-  transition: background 0.3s ease;
-}
-
-.blood-splatter {
-  position: fixed;
-  width: 100px;
-  height: 100px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%238B0000' d='M50 20c5 0 10 15 15 7s7-12 10-5-3 20 2 18 10-15 10-5-5 25-2 28 12-5 10 5-14 19-14 25-4 12-11 12-13-4-15-10-7-20-17-20-10 5-15 0 0-15 4-20 2-15-2-25 7-5 10 0 5-10 15-10z'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
-  opacity: 0.2;
-  pointer-events: none;
-  z-index: -1;
-  transform: translate3d(0, 0, 0);
-  will-change: transform, opacity;
-}
-
-.horror-text {
-  text-shadow: 0 0 15px rgba(139, 0, 0, 0.5), 0 0 30px rgba(139, 0, 0, 0.2);
-  letter-spacing: 3px;
-  transform: translate3d(0, 0, 0);
-  will-change: opacity;
-}
-
-.scratch {
-  position: absolute;
-  width: 150px;
-  height: 100px;
-  background-image: linear-gradient(to bottom right, transparent 45%, rgba(255, 255, 255, 0.1) 47%, transparent 49%, transparent 51%, rgba(255, 255, 255, 0.1) 53%, transparent 55%);
-  background-size: 100% 100%, 80% 80%, 60% 60%;
-  background-position: 10px 0, 30px 20px, 20px 10px;
-  background-repeat: no-repeat;
-  opacity: 0.4;
-  transform: rotate(-5deg) translate3d(0, 0, 0);
-  will-change: transform, opacity;
-}
-
-.ghost-element {
-  position: fixed;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3), transparent 70%);
-  pointer-events: none;
-  z-index: 100;
-  opacity: 0;
-  transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transform: translate3d(0, 0, 0);
-  will-change: transform, opacity;
-}
-
-@keyframes flicker {
-  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% { opacity: 0.99; }
-  20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0.4; }
-}
-
-.animate-flicker {
-  animation: flicker 8s infinite alternate;
-  animation-timing-function: linear;
-  transform: translate3d(0, 0, 0);
-  will-change: opacity;
-}
-
-@keyframes blood-drip {
-  0% { opacity: 0; transform: translateY(-10px) scale(0.95); }
-  10% { opacity: 0.6; transform: translateY(20px) scale(1); }
-  80% { opacity: 0.8; transform: translateY(150px) scale(1); }
-  100% { opacity: 0; transform: translateY(210px) scale(0.9); }
-}
-
-.animate-blood-drip {
-  animation: blood-drip 5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  transform: translate3d(0, 0, 0);
-  will-change: transform, opacity;
-}
-
-@keyframes float {
-  0% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-6px) rotate(0.5deg); }
-  50% { transform: translateY(-10px) rotate(-0.5deg); }
-  75% { transform: translateY(-5px) rotate(0.25deg); }
-  100% { transform: translateY(0) rotate(0deg); }
-}
-
-.animate-float {
-  animation: float 8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
-}
-
-@keyframes pulse-shadow {
-  0% { box-shadow: 0 0 15px 5px rgba(139, 0, 0, 0.7); }
-  50% { box-shadow: 0 0 25px 10px rgba(139, 0, 0, 0.5), 0 0 40px 20px rgba(139, 0, 0, 0.1); }
-  100% { box-shadow: 0 0 15px 5px rgba(139, 0, 0, 0.7); }
-}
-
-.animate-pulse-shadow {
-  animation: pulse-shadow 3s ease-in-out infinite;
-  transform: translate3d(0, 0, 0);
-  will-change: box-shadow;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0a0505;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #8B0000;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #6d0000;
-}
-
-.spider-web {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  transform: translate3d(0, 0, 0);
-}
-
-.background-effects {
-  will-change: transform, opacity;
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-}
-
-@keyframes noise {
-  0% { transform: translate(0, 0); }
-  10% { transform: translate(-1%, -1%); }
-  20% { transform: translate(-2%, 1%); }
-  30% { transform: translate(1%, -2%); }
-  40% { transform: translate(2%, 2%); }
-  50% { transform: translate(-2%, -1%); }
-  60% { transform: translate(1%, 1%); }
-  70% { transform: translate(-1%, 2%); }
-  80% { transform: translate(2%, -2%); }
-  90% { transform: translate(-2%, 1%); }
-  100% { transform: translate(0, 0); }
-}
-
-.noise-texture {
-  animation: noise 150s steps(10) infinite;
-  transform: translate3d(0, 0, 0);
-}
-
-.bg-particle, .blood-drip, .blood-splatter, .blood-splash {
-  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-@keyframes pulse-vignette {
-  0% { opacity: 0.6; }
-  50% { opacity: 0.8; }
-  100% { opacity: 0.6; }
-}
-
-.vignette-effect {
-  animation: pulse-vignette 8s ease-in-out infinite;
-  transform: translate3d(0, 0, 0);
-  will-change: opacity;
-}
-
-h1, h2, h3, p, span, button {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-@keyframes shimmer {
-  0% { opacity: 0.1; }
-  50% { opacity: 0.2; }
-  100% { opacity: 0.1; }
-}
-
-@keyframes blood-pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-flicker, 
-  .animate-blood-drip, 
-  .animate-float, 
-  .animate-pulse-shadow,
-  .noise-texture,
-  .vignette-effect {
-    animation: none;
-    transition: none;
-  }
-}
-
-.bg-particle {
-  animation: blood-pulse 5s ease-in-out infinite;
-}
-
-.blood-drip, 
-.bg-particle, 
-.blood-splatter, 
-.animate-flicker, 
-.animate-float {
-  backface-visibility: hidden;
-}
-
-@keyframes subtle-glow {
-  0% { filter: brightness(1); }
-  50% { filter: brightness(1.15); }
-  100% { filter: brightness(1); }
-}
-
-
-

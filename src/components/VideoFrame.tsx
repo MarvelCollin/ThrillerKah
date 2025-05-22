@@ -1,46 +1,35 @@
-import React from 'react';
+import { useState } from 'react';
 
 interface VideoFrameProps {
   videoId: string;
-  title?: string;
+  title: string;
 }
 
-const VideoFrame: React.FC<VideoFrameProps> = ({ videoId, title }) => {
-  const containerStyle: React.CSSProperties = {
-    position: 'relative',
-    width: '100%',
-    maxWidth: '1200px',
-    paddingTop: '56.25%',
-    overflow: 'hidden',
-    borderRadius: '0.75rem',
-    boxShadow: '0 0 30px rgba(139, 0, 0, 0.3)',
-    margin: '0 auto',
-  };
+const VideoFrame = ({ videoId, title }: VideoFrameProps) => {
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  const iframeStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: '0',
-    left: '0',
-    width: '100%',
-    height: '100%',
-    border: '2px solid #8B0000',
-    borderRadius: 'inherit',
-  };
   return (
-    <div className="video-container w-full" style={{ scrollMarginTop: '2rem' }}>
+    <div className="video-container mb-0 relative">
       {title && (
-        <h3 className="text-3xl lg:text-4xl font-bold text-[#8B0000] mb-8 text-center horror-text animate-flicker">
+        <h3 className="text-3xl md:text-4xl font-bold text-[#8B0000] mb-5 text-center horror-text animate-flicker">
           {title}
         </h3>
       )}
-      <div style={containerStyle}>
+      <div className="video-frame relative w-full aspect-video max-w-4xl mx-auto rounded-md overflow-hidden shadow-lg shadow-[#8B0000]/30 mb-0">
+        <div className="absolute inset-0 bg-black/80 z-10 flex items-center justify-center transition-opacity duration-500" 
+             style={{ opacity: isLoaded ? 0 : 1 }}>
+          <div className="w-12 h-12 border-4 border-t-transparent border-red-800 rounded-full animate-spin"></div>
+        </div>
         <iframe
+          width="100%"
+          height="100%"
           src={`https://www.youtube.com/embed/${videoId}`}
-          title={title || 'YouTube video'}
-          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+          title={title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
-          style={iframeStyle}
-        />
+          onLoad={() => setIsLoaded(true)}
+          className="z-0"
+        ></iframe>
       </div>
     </div>
   );
