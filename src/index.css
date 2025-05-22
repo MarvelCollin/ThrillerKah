@@ -1,7 +1,8 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #0a0505;
+  background: #070000;
+  background-image: radial-gradient(circle at center, #120000 0%, #000000 100%);
   color: #ffffff;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
@@ -127,6 +128,11 @@ body {
   position: absolute;
   width: 100px;
   height: 100px;
+}
+
+/* Background container */
+.background-effects {
+  will-change: transform, opacity;
 }
 
 
